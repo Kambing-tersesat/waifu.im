@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/skratchdot/open-golang/open" 
 )
 
 type ApiResponse struct {
@@ -12,12 +14,12 @@ type ApiResponse struct {
 		URL   string `json:"url"`
 		Source string `json:"source"`
 	} `json:"images"`
-	Message string `json:"message"` // Added for error handling
+	Message string `json:"message"` // Response kl limit rpd ygy
 }
 
 func main() {
 	// Replace with your actual API request URL
-	apiUrl := "https://api.waifu.im/search"
+	apiUrl := "https://api.waifu.im/search?included_tags=uniform"
 
 	// Create a new HTTP request
 	req, err := http.NewRequest(http.MethodGet, apiUrl, nil)
@@ -64,6 +66,12 @@ func main() {
 			for _, image := range response.Images {
 				fmt.Printf("  URL: %s\n", image.URL)
 				fmt.Printf("  Source: %s\n", image.Source)
+			}
+
+			// Open the first image URL in the default browser
+			err = open.Run(response.Images[0].URL)
+			if err != nil {
+				fmt.Println("Error opening URL:", err)
 			}
 		} else {
 			fmt.Println("No images found in the response.")
